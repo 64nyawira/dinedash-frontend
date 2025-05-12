@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PaymentService {
-  private apiUrl = 'http://localhost:3000/payment';
+  private apiUrl = 'https://dinedash-app.onrender.com/payment';
 
   constructor(private http: HttpClient) {}
 

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MenuService {
-  private apiUrl = 'http://localhost:3000/menu';
+  private apiUrl = 'https://dinedash-app.onrender.com/menu';
 
   constructor(private http: HttpClient) {}
 

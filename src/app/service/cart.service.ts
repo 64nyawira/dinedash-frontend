@@ -30,7 +30,7 @@ interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
-  private apiUrl = 'http://localhost:3000/cart';
+  private apiUrl = 'https://dinedash-app.onrender.com/cart';
 
   constructor(private http: HttpClient) { }
 

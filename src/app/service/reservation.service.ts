@@ -47,7 +47,7 @@ interface CancelReservationResponse {
   providedIn: 'root'
 })
 export class ReservationService {
-  private apiUrl = 'http://localhost:3000/reservation';
+  private apiUrl = 'https://dinedash-app.onrender.com/reservation';
 
   constructor(private http: HttpClient) {}
 

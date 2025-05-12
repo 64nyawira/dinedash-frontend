@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoyaltyService {
-  private apiUrl = 'http://localhost:3000/loyalty';
-  private rewardUrl = 'http://localhost:3000/reward';
+  private apiUrl = 'https://dinedash-app.onrender.com/loyalty';
+  private rewardUrl = 'https://dinedash-app.onrender.com/reward';
 
   constructor(private http: HttpClient) {}
 

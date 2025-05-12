@@ -34,7 +34,7 @@ interface ChangeStatusRequest {
   providedIn: 'root'
 })
 export class TableService {
-  private apiUrl = 'http://localhost:3000/table';
+  private apiUrl = 'https://dinedash-app.onrender.com/table';
 
   constructor(private http: HttpClient) {}
 
