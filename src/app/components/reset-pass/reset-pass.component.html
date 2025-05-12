@@ -1,0 +1,33 @@
+<div class="main">
+    <div class="container">
+        <h3>Reset Password</h3>
+        <p>Enter your new password.</p>
+
+        <!-- ✅ Show success message -->
+        <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+        </div>
+
+        <!-- ✅ Show error message -->
+        <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+        </div>
+
+        <form #resetPassForm="ngForm" (ngSubmit)="resetPassword(resetPassForm)" novalidate>
+            <label for="password">New Password:</label>
+            <input type="password" id="password" name="password" [(ngModel)]="formData.password" #password="ngModel" required minlength="8">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error-text">
+                <div *ngIf="password.hasError('minlength')">Password must have at least 8 characters</div>
+            </div>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="formData.confirmPassword" #confirmPassword="ngModel" required>
+            <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="error-text">
+                <div *ngIf="formData.confirmPassword !== formData.password">Passwords do not match</div>
+            </div>
+
+            <button type="submit" [disabled]="resetPassForm.invalid">Reset Password</button>
+        </form>
+
+    </div>
+</div>

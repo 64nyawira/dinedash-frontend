@@ -1,0 +1,95 @@
+<!-- HTML Template -->
+<div class="admin-dashboard" @fadeIn>
+  <div class="menu-board">
+    <h1>User Management</h1>
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Search users..."
+        [(ngModel)]="searchTerm"
+        class="search-input"
+      />
+      <select [(ngModel)]="selectedRole" class="role-filter">
+        <option value="">All Roles</option>
+        <option value="customer">Customer</option>
+        <option value="client">Client</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Success messages -->
+  <div class="message-container" *ngIf="successMessage" @fadeInOut>
+    <div class="success-message">
+      <i class="message-icon">✓</i>
+      <span>{{ successMessage }}</span>
+      <button class="close-message" (click)="successMessage = ''">×</button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <div class="loading-spinner" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Fetching users...</p>
+    </div>
+    
+    <table class="users-table" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody @tableRowAnimation>
+        <tr *ngFor="let user of filteredUsers" class="user-row" @fadeIn>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="role-badge" [ngClass]="user.role">{{ user.role }}</span>
+          </td>
+          <td class="actions">
+            <div class="role-radio-group">
+              <label class="role-radio">
+                <input type="radio" name="role_{{user.id}}" 
+                       [checked]="user.role === 'customer'"
+                       (change)="changeUserRole(user.id, 'customer')">
+                <span class="radio-label">Customer</span>
+              </label>
+              <label class="role-radio">
+                <input type="radio" name="role_{{user.id}}" 
+                       [checked]="user.role === 'client'"
+                       (change)="changeUserRole(user.id, 'client')">
+                <span class="radio-label">Client</span>
+              </label>
+            </div>
+            <button class="delete-btn" (click)="openDeleteConfirmation(user)">
+              <i class="trash-icon">🗑️</i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredUsers.length === 0">
+          <td colspan="4" class="no-users">
+            <p>No users found matching your criteria</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" @fadeIn>
+  <div class="delete-modal" @scaleIn>
+    <h2>Confirm Deletion</h2>
+    <p>Are you sure you want to remove <strong>{{ userToDelete?.name }}</strong>?</p>
+    <p class="warning-text">This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="cancelDelete()">Cancel</button>
+      <button class="confirm-delete-btn" (click)="confirmDelete()">
+        <i class="trash-icon">🗑️</i> Delete
+      </button>
+    </div>
+  </div>
+</div>

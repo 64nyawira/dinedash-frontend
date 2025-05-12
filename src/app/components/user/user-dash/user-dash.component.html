@@ -1,0 +1,187 @@
+<app-user-navbar></app-user-navbar>
+
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Welcome, {{user.firstName}}!</h1>
+    <p class="last-visit">Last visit: {{user.lastVisit | date:'medium'}}</p>
+  </div>
+  
+  <div class="dashboard-grid">
+    <!-- Current Orders -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Current Orders</h2>
+        <span class="badge" *ngIf="currentOrders.length > 0">{{currentOrders.length}}</span>
+      </div>
+      <div class="card-content">
+        <div *ngIf="currentOrders.length === 0" class="empty-state">
+          <p>No active orders at the moment.</p>
+          <button class="cta-button" routerLink="/menu">Order Now</button>
+        </div>
+        <div *ngFor="let order of currentOrders" class="order-item">
+          <div class="order-header">
+            <span class="order-number">Order #{{order.id}}</span>
+            <span class="order-status" [ngClass]="order.status.toLowerCase()">{{order.status}}</span>
+          </div>
+          <div class="order-details">
+            <p class="order-time">{{order.orderTime | date:'short'}}</p>
+            <p class="order-items">{{order.items.length}} items · ${{order.total}}</p>
+          </div>
+          <button class="text-button" (click)="viewOrderDetails(order.id)">View Details</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Order History -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Order History</h2>
+      </div>
+      <div class="card-content">
+        <div *ngIf="orderHistory.length === 0" class="empty-state">
+          <p>No previous orders.</p>
+        </div>
+        <div *ngFor="let order of orderHistory" class="order-item">
+          <div class="order-header">
+            <span class="order-number">Order #{{order.id}}</span>
+            <span class="order-date">{{order.orderTime | date:'mediumDate'}}</span>
+          </div>
+          <div class="order-details">
+            <p class="order-items">{{order.items.length}} items · ${{order.total}}</p>
+          </div>
+          <button class="text-button" routerLink="/reorder/{{order.id}}">Reorder</button>
+        </div>
+      </div>
+      <div class="card-footer" *ngIf="orderHistory.length > 0">
+        <button class="text-button" routerLink="/orders/history">View All Orders</button>
+      </div>
+    </div>
+    
+    <!-- Reservations -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Reservations</h2>
+      </div>
+      <div class="card-content">
+        <div *ngIf="reservations.length === 0" class="empty-state">
+          <p>No upcoming reservations.</p>
+          <button class="cta-button" routerLink="/reservation">Make Reservation</button>
+        </div>
+        <div *ngFor="let reservation of reservations" class="reservation-item">
+          <div class="reservation-date">
+            <div class="date-badge">
+              <span class="month">{{reservation.date | date:'MMM'}}</span>
+              <span class="day">{{reservation.date | date:'d'}}</span>
+            </div>
+            <div class="time-details">
+              <p class="time">{{reservation.date | date:'shortTime'}}</p>
+              <p class="people">Table for {{reservation.partySize}}</p>
+            </div>
+          </div>
+          <div class="reservation-actions">
+            <button class="text-button danger" (click)="cancelReservation(reservation.id)">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer" *ngIf="reservations.length > 0">
+        <button class="text-button" routerLink="/reserve">View All Reservations</button>
+      </div>
+    </div>
+    
+    <!-- Loyalty Points -->
+    <div class="dashboard-card loyalty-card">
+      <div class="card-header">
+        <h2>Loyalty Program</h2>
+      </div>
+      <div class="card-content loyalty-content">
+        <div class="points-container">
+          <div class="points-circle">
+            <span class="points-value">{{user.loyaltyPoints}}</span>
+            <span class="points-label">POINTS</span>
+          </div>
+          <div class="points-info">
+            <p class="points-next">{{150 - (user.loyaltyPoints % 150)}} points until your next reward</p>
+            <div class="progress-bar">
+              <div class="progress" [style.width]="(user.loyaltyPoints % 150) / 150 * 100 + '%'"></div>
+            </div>
+          </div>
+        </div>
+        <div class="loyalty-actions">
+          <button class="cta-button" (click)="redeemPoints()">Redeem Points</button>
+          <button class="text-button" routerLink="/rewards">View Rewards</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <!-- Favorites -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Your Favorites</h2>
+      </div>
+      <div class="card-content">
+        <div *ngIf="favorites.length === 0" class="empty-state">
+          <p>You haven't added any favorites yet.</p>
+          <button class="cta-button">Browse Menu</button>
+        </div>
+        <div class="favorites-grid">
+          <div *ngFor="let favorite of favorites" class="favorite-item">
+            <img [src]="favorite.imageUrl" [alt]="favorite.name" class="favorite-image">
+            <div class="favorite-details">
+              <h3>{{favorite.name}}</h3>
+              <p class="favorite-price">${{favorite.price}}</p>
+            </div>
+            <button class="icon-button">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Upcoming Events -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Upcoming Events</h2>
+      </div>
+      <div class="card-content">
+        <div *ngIf="events.length === 0" class="empty-state">
+          <p>No upcoming events at the moment.</p>
+        </div>
+        <div *ngFor="let event of events" class="event-item">
+          <div class="event-date">
+            <span class="month">{{event.date | date:'MMM'}}</span>
+            <span class="day">{{event.date | date:'d'}}</span>
+          </div>
+          <div class="event-details">
+            <h3>{{event.name}}</h3>
+            <p>{{event.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<section id="featured" class="featured-section">
+  <h2 class="section-title">Featured Offerings</h2>
+  <div class="stories-container">
+    <div class="story-grid">
+      <div *ngFor="let template of storyTemplates" class="story-item">
+        <div class="story-content" [ngStyle]="{'background-image': 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(' + template.imageUrl + ')'}">
+          <div class="dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          
+          <div class="story-text">
+            <h2 class="title">{{template.title}}</h2>
+            <p class="subtext" *ngIf="template.subtext">{{template.subtext}}</p>
+            <p class="description" *ngIf="template.description">{{template.description}}</p>
+            
+            <button class="cta-button">{{template.buttonText}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

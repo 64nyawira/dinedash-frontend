@@ -1,0 +1,46 @@
+<div class="main">
+    <div class="container">
+       <h3>Create Account</h3>
+       <div class="account">
+           <p>Already have an account?</p>
+           <p routerLink="/login" class="anchor">SignIn</p>
+       </div>
+
+       <form #registerForm="ngForm" (ngSubmit)="register()" novalidate>
+           
+           <label for="name">Name</label>
+           <input type="text" id="name" [(ngModel)]="user.name" #name="ngModel" required name="name" placeholder="Enter your name">
+           <div *ngIf="(name.invalid && (name.dirty || name.touched)) || nameError" style="font-size:12px;color:red;margin-bottom:6px;">
+               <div *ngIf="name.hasError('required')">Name is required</div>
+               <div *ngIf="nameError">{{ nameError }}</div>
+           </div>
+           
+           <label for="email">Email</label>
+           <input type="email" id="email" [(ngModel)]="user.email" #email="ngModel" required name="email" placeholder="example@yop.com">
+           <div *ngIf="(email.invalid && (email.dirty || email.touched)) || emailError" style="font-size:12px;color:red;margin-bottom:6px;">
+               <div *ngIf="email.hasError('required')">Email is required</div>
+               <div *ngIf="emailError">{{ emailError }}</div>
+           </div>
+           
+           <label for="password">Password</label>
+           <input type="password" id="password" [(ngModel)]="user.password" #password="ngModel" required name="password">
+           <div *ngIf="(password.invalid && (password.dirty || password.touched)) || passwordError" style="font-size:12px;color:red;margin-bottom:6px;">
+               <div *ngIf="password.hasError('required')">Password is required</div>
+               <div *ngIf="passwordError">{{ passwordError }}</div>
+           </div>
+           
+           <label for="confirmPassword">Confirm Password</label>
+           <input type="password" id="confirmPassword" [(ngModel)]="user.confirmPassword" #confirmPassword="ngModel" required name="confirmPassword">
+           <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" style="font-size:12px;color:red;margin-bottom:6px;">
+               <div *ngIf="confirmPassword.hasError('required')">Confirm password is required</div>
+           </div>
+           
+           <!-- General error message -->
+           <div *ngIf="errorMessage" style="font-size:14px;color:red;margin:10px 0;">
+               {{ errorMessage }}
+           </div>
+           
+           <button type="submit">Sign Up</button>
+       </form>
+   </div>
+</div>

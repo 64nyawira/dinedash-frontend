@@ -1,0 +1,42 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="logo">
+      <a routerLink="/">DineDash</a>
+    </div>
+    
+    <button class="mobile-menu-btn" (click)="toggleMenu()" aria-label="Toggle navigation">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+    
+    <div class="nav-menu" [ngClass]="{'active': isMenuOpen}">
+      <ul class="nav-links">
+        <li class="nav-item">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMenuOpen = false">Home</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/umenu" routerLinkActive="active" (click)="isMenuOpen = false">Menu</a>
+        </li>
+        <!-- Protected routes that need user ID -->
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a [routerLink]="['/reserve', userId]" routerLinkActive="active" (click)="isMenuOpen = false">Reservations</a>
+        </li>
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a [routerLink]="['/myOrders', userId]" routerLinkActive="active" (click)="isMenuOpen = false">Orders</a>
+        </li>
+
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a [routerLink]="['/redeem', userId]" routerLinkActive="active" (click)="isMenuOpen = false">Redeem Points</a>
+        </li>
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a [routerLink]="['/user-dash', userId]" routerLinkActive="active" (click)="isMenuOpen = false">Profile</a>
+        </li>
+        <!-- Login/Logout options -->
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a routerLink="/login" routerLinkActive="active" (click)="isMenuOpen = false">Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

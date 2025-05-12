@@ -1,0 +1,135 @@
+
+<app-user-navbar></app-user-navbar>
+
+<div class="main">
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="#appetizers">Appetizers</a>
+    <a href="#main-courses">Main Courses</a>
+    <a href="#desserts">Desserts</a>
+    <a href="#beverages">Beverages</a>
+    <div class="nav-right">
+      <a (click)="goToUserDashboard()" class="dashboard-link">My Account</a>
+      <a (click)="goToCart()" class="cart-icon">
+        <i class='bx bx-cart-download'></i>
+        <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="menu-header">
+    <h1>DineDash</h1>
+    <p>Fine Dining Experience</p>
+  </header>
+
+  <div class="outside">
+    <div class="menu-container">
+      <!-- Loading state -->
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading menu items...</p>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="error" class="error-message">
+        <p>{{ error }}</p>
+        <button (click)="loadMenuItems()" class="retry-btn">Try Again</button>
+      </div>
+
+      <!-- Dynamic Menu Sections -->
+      <ng-container *ngIf="!loading && !error">
+        <!-- Appetizers -->
+        <section class="menu-section" id="appetizers">
+          <div class="category-header">
+            <span class="line"></span>
+            <h3>APPETIZERS</h3>
+            <span class="line"></span>
+          </div>
+
+          <div class="menu-grid" *ngIf="getItemsByCategory('Appetizers').length > 0">
+            <div class="subClass" *ngFor="let item of getItemsByCategory('Appetizers')" (click)="viewItemDetails(item.id)">
+              <div class="menu-item">
+                <p class="item-name">{{ item.dishName }}</p>
+                <p class="item-price">${{ item.price.toFixed(2) }}</p>
+              </div>
+              <p class="item-description">{{ item.description }}</p>
+            </div>
+          </div>
+          <p *ngIf="getItemsByCategory('Appetizers').length === 0" class="no-items-message">
+            No appetizers available at the moment.
+          </p>
+          <img src="/assets/appetizer2.jpeg" class="category-image appetizers" alt="Appetizers Image">
+        </section>
+
+        <!-- Main Courses -->
+        <section class="menu-section" id="main-courses">
+          <div class="category-header">
+            <span class="line"></span>
+            <h3>MAIN COURSES</h3>
+            <span class="line"></span>
+          </div>
+
+          <div class="menu-grid" *ngIf="getItemsByCategory('Main Course').length > 0">
+            <div class="subClass" *ngFor="let item of getItemsByCategory('Main Course')" (click)="viewItemDetails(item.id)">
+              <div class="menu-item">
+                <p class="item-name">{{ item.dishName }}</p>
+                <p class="item-price">${{ item.price.toFixed(2) }}</p>
+              </div>
+              <p class="item-description">{{ item.description }}</p>
+            </div>
+          </div>
+          <p *ngIf="getItemsByCategory('Main Course').length === 0" class="no-items-message">
+            No main courses available at the moment.
+          </p>
+          <img src="/assets/swahili.jpeg" class="category-image mainCourse" alt="Main Course Image">
+        </section>
+
+        <!-- Desserts -->
+        <section class="menu-section" id="desserts">
+          <div class="category-header">
+            <span class="line"></span>
+            <h3>DESSERTS</h3>
+            <span class="line"></span>
+          </div>
+
+          <div class="menu-grid" *ngIf="getItemsByCategory('Desserts').length > 0">
+            <div class="subClass" *ngFor="let item of getItemsByCategory('Desserts')" (click)="viewItemDetails(item.id)">
+              <div class="menu-item">
+                <p class="item-name">{{ item.dishName }}</p>
+                <p class="item-price">${{ item.price.toFixed(2) }}</p>
+              </div>
+              <p class="item-description">{{ item.description }}</p>
+            </div>
+          </div>
+          <p *ngIf="getItemsByCategory('Desserts').length === 0" class="no-items-message">
+            No desserts available at the moment.
+          </p>
+          <img src="/assets/chocolatte.jpeg" class="category-image desserts" alt="Desserts Image">
+        </section>
+
+        <!-- Beverages -->
+        <section class="menu-section" id="beverages">
+          <div class="category-header">
+            <span class="line"></span>
+            <h3>BEVERAGES</h3>
+            <span class="line"></span>
+          </div>
+
+          <div class="menu-grid" *ngIf="getItemsByCategory('Beverages').length > 0">
+            <div class="subClass" *ngFor="let item of getItemsByCategory('Beverages')" (click)="viewItemDetails(item.id)">
+              <div class="menu-item">
+                <p class="item-name">{{ item.dishName }}</p>
+                <p class="item-price">${{ item.price.toFixed(2) }}</p>
+              </div>
+              <p class="item-description">{{ item.description }}</p>
+            </div>
+          </div>
+          <p *ngIf="getItemsByCategory('Beverages').length === 0" class="no-items-message">
+            No beverages available at the moment.
+          </p>
+          <img src="/assets/vinywaji.jpeg" class="category-image beverage" alt="Drinks Image">
+        </section>
+      </ng-container>
+    </div>
+  </div>
+</div>

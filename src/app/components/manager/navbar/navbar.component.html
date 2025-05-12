@@ -1,0 +1,93 @@
+<nav class="navbar" [class.mobile-open]="isMenuOpen">
+    <div class="navbar-brand">
+      <a href="#" class="logo">
+        <i class="fas fa-utensils"></i>
+        <span>DineDashManager</span>
+      </a>
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <i class="fas" [ngClass]="isMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+      </button>
+    </div>
+    
+    <div class="navbar-links" [class.show]="isMenuOpen">
+      <a 
+        [routerLink]="['/']" 
+        [class.active]="activeLink === ''"
+        (click)="setActiveLink('home')">
+        <i class="fas fa-home"></i>
+        <!-- <span>Home</span> -->
+      </a>
+      <a 
+        [routerLink]="['/menu']" 
+        [class.active]="activeLink === 'menu'"
+        (click)="setActiveLink('menu')">
+        <!-- <i class="fas fa-book-open"></i> -->
+        <span>Menu</span>
+      </a>
+      <a 
+        [routerLink]="['/orders']" 
+        [class.active]="activeLink === 'orders'"
+        (click)="setActiveLink('orders')">
+        <!-- <i class="fas fa-clipboard-list"></i> -->
+        <span>Orders</span>
+      </a>
+
+      <a 
+      [routerLink]="['/reservations']" 
+      [class.active]="activeLink === 'reservations'"
+      (click)="setActiveLink('reservations')">
+      <!-- <i class="fas fa-clipboard-list"></i> -->
+      <span>Reservations</span>
+    </a>
+
+      <a 
+        [routerLink]="['/manager/:id']" 
+        [class.active]="activeLink === '/manager/:id'"
+        (click)="setActiveLink('/manager/:id')">
+        <!-- <i class="fas fa-chart-bar"></i> -->
+        <span>Analytics & Reports</span>
+      </a>
+
+      <a 
+        [routerLink]="['/createTable']" 
+        [class.active]="activeLink === 'createTable'"
+        (click)="setActiveLink('createTable')">
+        <!-- <i class="fas fa-plus"></i> -->
+        <span>Tables</span>
+      </a>
+       
+      <a 
+        [routerLink]="['/createForm']" 
+        [class.active]="activeLink === 'createForm'"
+        (click)="setActiveLink('createForm')">
+        <!-- <i class="fas fa-plus"></i> -->
+        <span>Create a Meal</span>
+      </a>
+      <a 
+        [routerLink]="['/rewards/:id']" 
+        [class.active]="activeLink === 'rewards'"
+        (click)="setActiveLink('rewards')">
+        <!-- <i class="fas fa-plus"></i> -->
+        <span>Rewards</span>
+      </a>
+
+
+    </div>
+    
+    <div class="navbar-actions">
+      <div class="search-bar">
+        <input type="text" placeholder="Search...">
+        <i class="fas fa-search"></i>
+      </div>
+      
+      <div class="user-menu">
+        <div class="avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <span class="username">{{name}}</span>
+          <span class="role">Manager</span>
+        </div>
+      </div>
+    </div>
+  </nav>

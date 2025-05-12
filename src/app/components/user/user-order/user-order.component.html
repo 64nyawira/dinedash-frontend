@@ -1,0 +1,211 @@
+<app-user-navbar></app-user-navbar>
+<div class="orders-container">
+  <!-- Loyalty Points Card -->
+  <div class="loyalty-card" [@fadeIn]>
+    <div class="loyalty-header">
+      <div class="loyalty-title">
+        <h2>My Loyalty</h2>
+        <span class="loyalty-badge" [@pointsChange]="pointsAnimation">
+          {{ loyaltyPoints }} points
+        </span>
+      </div>
+      <div class="loyalty-level">
+        <span>Level {{ getLoyaltyLevel() }}</span>
+      </div>
+    </div>
+    <div class="loyalty-progress">
+      <div class="progress-label">
+        <span>{{ getPointsToNextLevel() }} points to next level</span>
+      </div>
+      <mat-progress-bar mode="determinate" [value]="getLoyaltyProgress()" color="accent"></mat-progress-bar>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loadingOrders" class="loading-indicator">
+    <mat-spinner></mat-spinner>
+    <p>Loading your orders...</p>
+  </div>
+
+  <!-- Orders Section -->
+  <div *ngIf="!loadingOrders" class="orders-container">
+    <mat-tab-group>
+      <mat-tab label="Active Orders">
+        <div *ngIf="activeOrders.length === 0" class="empty-state">
+          <mat-icon>shopping_basket</mat-icon>
+          <p>No active orders found.</p>
+        </div>
+        
+        <div class="orders-list">
+          <div *ngFor="let order of activeOrders" class="order-card" [@fadeIn] [@orderHighlight]="'normal'">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>
+                  Order #{{ order.orderNumber || 'N/A' }}
+                  <span class="order-status" [ngClass]="getStatusClass(order.status)">
+                    {{ orderStatusMap[order.status] }}
+                  </span>
+                </mat-card-title>
+                <mat-card-subtitle>
+                  {{ formatOrderDate(order.orderDate) }}
+                </mat-card-subtitle>
+              </mat-card-header>
+              
+              <mat-card-content>
+                <div class="order-details">
+                  <div class="order-summary">
+                    <p>Total: ${{ order.totalAmount?.toFixed(2) || '0.00' }}</p>
+                    <p>Type: {{ order.orderType }}</p>
+                    <p *ngIf="order.orderType === 'delivery'">ETA: {{ getDeliveryEta(order) }}</p>
+                  </div>
+
+                  <div class="order-items">
+                    <h4>Items:</h4>
+                    <div *ngFor="let item of order.items" class="order-item">
+                      <div class="item-thumbnail" (click)="openImageDialog(item.image, item.name)">
+                        <img [src]="item.image || '/assets/default-food.jpg'" [alt]="item.name">
+                      </div>
+                      <div class="item-details">
+                        <h4>{{ item.name || 'Unnamed Item' }}</h4>
+                        <p>Quantity: {{ item.quantity || 0 }}</p>
+                        <p>Price: ${{ item.price?.toFixed(2) || '0.00' }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+          
+              <mat-card-actions>
+                <button 
+                  mat-raised-button 
+                  color="warn" 
+                  (click)="cancelOrder(order.id)"
+                  *ngIf="order.status === 'pending'"
+                >
+                  Cancel Order
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Completed Orders">
+        <div *ngIf="completedOrders.length === 0" class="empty-state">
+          <mat-icon>receipt</mat-icon>
+          <p>No completed orders found.</p>
+        </div>
+        
+        <div class="orders-list">
+          <div *ngFor="let order of completedOrders" class="order-card" [@fadeIn]>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>
+                  Order #{{ order.orderNumber || 'N/A' }}
+                  <span class="order-status status-completed">Completed</span>
+                </mat-card-title>
+                <mat-card-subtitle>
+                  {{ formatOrderDate(order.orderDate) }}
+                </mat-card-subtitle>
+              </mat-card-header>
+              
+              <mat-card-content>
+                <div class="order-details">
+                  <div class="order-summary">
+                    <p>Total: ${{ order.totalAmount?.toFixed(2) || '0.00' }}</p>
+                    <p>Type: {{ order.orderType }}</p>
+                    <p class="points-earned">
+                      <mat-icon>loyalty</mat-icon>
+                      Points Earned: {{ calculatePointsEarned(order) }}
+                    </p>
+                  </div>
+                  
+                  <div class="order-items">
+                    <h4>Items:</h4>
+                    <div *ngFor="let item of order.items" class="order-item">
+                      <div class="item-thumbnail" (click)="openImageDialog(item.image, item.name)">
+                        <img [src]="item.image || '/assets/default-food.jpg'" [alt]="item.name">
+                      </div>
+                      <div class="item-details">
+                        <h4>{{ item.name || 'Unnamed Item' }}</h4>
+                        <p>Quantity: {{ item.quantity || 0 }}</p>
+                        <p>Price: ${{ item.price?.toFixed(2) || '0.00' }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <!-- Order Tracking Modal -->
+  <div *ngIf="selectedOrder && selectedOrder.orderType === 'delivery'" class="tracking-modal" [@fadeIn]>
+    <div class="tracking-header">
+      <h3>Tracking Order #{{ selectedOrder.orderNumber || 'N/A' }}</h3>
+      <button mat-icon-button (click)="selectedOrder = null">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="tracking-content">
+      <div class="tracking-info">
+        <div class="tracking-status">
+          <h4>Status: {{ orderStatusMap[selectedOrder.status] || 'Unknown' }}</h4>
+          <p>Estimated Delivery: {{ getDeliveryEta(selectedOrder) }}</p>
+        </div>
+        
+        <div class="delivery-address">
+          <mat-icon>location_on</mat-icon>
+          <p>{{ selectedOrder.deliveryAddress || 'No address provided' }}</p>
+        </div>
+      </div>
+      
+      <div class="tracking-map">
+        <google-map *ngIf="center" height="300px" width="100%" 
+                   [center]="center" 
+                   [zoom]="zoom" 
+                   [options]="{ mapTypeControl: false }">
+          <map-marker *ngFor="let position of markerPositions"
+                     [position]="position" 
+                     [options]="markerOptions"></map-marker>
+        </google-map>
+      </div>
+      
+      <div class="tracking-timeline">
+        <div class="timeline-step" [class.active]="selectedOrder.status !== 'cancelled'">
+          <div class="timeline-icon">
+            <mat-icon>receipt</mat-icon>
+          </div>
+          <div class="timeline-content">
+            <h5>Order Received</h5>
+            <p>{{ formatOrderDate(selectedOrder.orderDate) }}</p>
+          </div>
+        </div>
+        
+        <div class="timeline-step" [class.active]="selectedOrder.status === 'processing' || selectedOrder.status === 'completed'">
+          <div class="timeline-icon">
+            <mat-icon>directions_car</mat-icon>
+          </div>
+          <div class="timeline-content">
+            <h5>Out for Delivery</h5>
+            <p *ngIf="selectedOrder.processingDate">{{ formatOrderDate(selectedOrder.processingDate) }}</p>
+          </div>
+        </div>
+        
+        <div class="timeline-step" [class.active]="selectedOrder.status === 'completed'">
+          <div class="timeline-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="timeline-content">
+            <h5>Delivered</h5>
+            <p *ngIf="selectedOrder.completionDate">{{ formatOrderDate(selectedOrder.completionDate) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

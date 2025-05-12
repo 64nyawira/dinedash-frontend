@@ -1,0 +1,76 @@
+<app-navbar></app-navbar>
+<div class="orders-container">
+  <div class="header">
+    <h1>Order Management</h1>
+    <div class="search-bar">
+      <input 
+        type="text" 
+        placeholder="Search customer by name..." 
+        [(ngModel)]="searchQuery"
+        (input)="onSearch($event)"
+      />
+      <i class="search-icon">🔍</i>
+    </div>
+  </div>
+
+  <div class="loading-indicator" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading orders...</p>
+  </div>
+
+  <div class="orders-content" *ngIf="!isLoading">
+    <div class="no-orders" *ngIf="filteredOrders.length === 0">
+      <p *ngIf="searchQuery">No customers found matching "{{searchQuery}}"</p>
+      <p *ngIf="!searchQuery">No orders available at this time</p>
+    </div>
+
+    <table class="orders-table" *ngIf="filteredOrders.length > 0">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Dish Name</th>
+          <th>Quantity</th>
+          <th>Total Amount</th>
+          <th>Loyalty Points</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of filteredOrders" [ngClass]="{'cancelled': order.status === 'cancelled'}">
+          <td class="order-id">{{order.id.substring(0, 8)}}...</td>
+          <td class="customer-name">{{order.user?.name || 'Unknown Customer'}}</td>
+          <td class="dish-list">
+            <div *ngFor="let item of order.orderItems">
+              {{item.menu?.dishName || 'Unknown Dish'}}
+            </div>
+          </td>
+          <td class="quantity">{{getTotalItems(order)}}</td>
+          <td class="total-amount">{{formatCurrency(order.totalAmount || 0)}}</td>
+          <td class="loyalty-points">{{order.user?.loyaltyPoints?.points || 0}}</td>
+          <td class="status">
+            <span [ngClass]="getStatusClass(order.status)">{{order.status}}</span>
+          </td>
+          <td class="actions">
+            <select 
+              [disabled]="order.status === 'cancelled'"
+              [value]="order.status"
+              (change)="updateStatus(order, $event)"
+            >
+              <option *ngFor="let status of statusOptions" [value]="status">
+                {{status}}
+              </option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <div class="order-count">
+      <p>Showing {{filteredOrders.length}} of {{orders.length}} orders</p>
+    </div>
+  </div>
+</div>

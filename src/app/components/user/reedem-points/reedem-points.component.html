@@ -1,0 +1,200 @@
+<!-- redeem-points.component.html -->
+<app-user-navbar></app-user-navbar>
+<div class="redeem-container">
+    <!-- User Points Header -->
+    <div class="points-card" @fadeInUp>
+      <div class="points-header">
+        <div class="points-title">
+          <h2>Your Loyalty Points</h2>
+          <div class="points-value" [class.pulse-animation]="!loadingPoints">
+            <mat-icon>stars</mat-icon>
+            <span *ngIf="!loadingPoints">{{userPoints}}</span>
+            <mat-spinner diameter="24" *ngIf="loadingPoints"></mat-spinner>
+            <span>points</span>
+          </div>
+        </div>
+        <div class="level-badge">
+          <ng-container *ngIf="!loadingPoints">
+            <span *ngIf="userPoints < 50">Bronze</span>
+            <span *ngIf="userPoints >= 50 && userPoints < 150">Silver</span>
+            <span *ngIf="userPoints >= 150 && userPoints < 300">Gold</span>
+            <span *ngIf="userPoints >= 300">Platinum</span>
+          </ng-container>
+        </div>
+      </div>
+      <div class="progress-container" *ngIf="!loadingPoints">
+        <div class="next-level">
+          <ng-container *ngIf="userPoints < 50">
+            <span>{{50 - userPoints}} more points to Silver</span>
+          </ng-container>
+          <ng-container *ngIf="userPoints >= 50 && userPoints < 150">
+            <span>{{150 - userPoints}} more points to Gold</span>
+          </ng-container>
+          <ng-container *ngIf="userPoints >= 150 && userPoints < 300">
+            <span>{{300 - userPoints}} more points to Platinum</span>
+          </ng-container>
+          <ng-container *ngIf="userPoints >= 300">
+            <span>Platinum Status Achieved!</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Rewards Section -->
+    <div class="rewards-section">
+      <div class="rewards-header">
+        <h2>Available Rewards</h2>
+        <p>Redeem your points for these exclusive rewards</p>
+      </div>
+  
+      <!-- Search and Filter Controls -->
+      <div class="controls-section" @fadeInUp>
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search rewards</mat-label>
+          <input matInput [(ngModel)]="searchTerm" (input)="searchRewards()" placeholder="Free Dessert...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+  
+        <div class="filter-controls">
+          <div class="filter-buttons">
+            <button 
+              mat-button 
+              [class.active]="filterMode === 'all'" 
+              (click)="setFilterMode('all')">
+              All
+            </button>
+            <button 
+              mat-button 
+              [class.active]="filterMode === 'available'" 
+              (click)="setFilterMode('available')">
+              Available Now
+            </button>
+            <button 
+              mat-button 
+              [class.active]="filterMode === 'unavailable'" 
+              (click)="setFilterMode('unavailable')">
+              Need More Points
+            </button>
+          </div>
+  
+          <div class="sort-dropdown">
+            <span>Sort by:</span>
+            <select (change)="setSortBy($any($event.target).value)">
+              <option value="default">Featured</option>
+              <option value="pointsLow">Points: Low to High</option>
+              <option value="pointsHigh">Points: High to Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Loading Indicator -->
+      <div class="loading-indicator" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading rewards...</p>
+      </div>
+  
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!loading && filteredRewards.length === 0">
+        <mat-icon>card_giftcard</mat-icon>
+        <h3>No rewards found</h3>
+        <p *ngIf="searchTerm">No rewards match your search criteria. Try a different search term.</p>
+        <p *ngIf="!searchTerm && filterMode === 'available'">You don't have enough points for any rewards yet. Keep earning!</p>
+        <p *ngIf="!searchTerm && filterMode === 'all'">There are no rewards available at the moment. Please check back later.</p>
+        <button mat-raised-button (click)="setFilterMode('all')" *ngIf="filterMode !== 'all'">View All Rewards</button>
+      </div>
+  
+      <!-- Rewards Grid -->
+      <div class="rewards-grid" *ngIf="!loading && filteredRewards.length > 0" [@staggeredFadeIn]="filteredRewards.length">
+        <div class="reward-card" *ngFor="let reward of filteredRewards">
+          <mat-card [class.unavailable]="!canRedeem(reward)">
+            <div class="card-ribbon" *ngIf="canRedeem(reward)">
+              <span>Available</span>
+            </div>
+            <mat-card-header>
+              <mat-card-title>
+                <span>{{reward.name}}</span>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="reward-points">
+                <mat-icon>stars</mat-icon>
+                <span>{{reward.pointsCost}} points</span>
+              </div>
+              <p class="reward-description">{{reward.description}}</p>
+              <div class="points-needed" *ngIf="!canRedeem(reward)">
+                <mat-icon>add_circle_outline</mat-icon>
+                <span>You need {{pointsNeeded(reward)}} more points</span>
+              </div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button 
+                mat-raised-button 
+                [disabled]="!canRedeem(reward)" 
+                (click)="openRedeemConfirm(reward)">
+                <mat-icon>redeem</mat-icon>
+                Redeem Reward
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Redeem Confirmation Dialog -->
+    <div class="modal-overlay" *ngIf="showConfirmDialog" @fadeIn>
+      <div class="modal-container confirmation-modal" @scaleIn>
+        <div class="modal-header">
+          <h2>Confirm Redemption</h2>
+          <button mat-icon-button (click)="closeConfirmDialog()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="modal-content">
+          <div class="reward-details">
+            <h3>{{selectedReward?.name}}</h3>
+            <div class="reward-cost">
+              <mat-icon>stars</mat-icon>
+              <span>{{selectedReward?.pointsCost}} points</span>
+            </div>
+            <p>{{selectedReward?.description}}</p>
+  
+            <div class="points-summary">
+              <div class="summary-row">
+                <span>Your current points:</span>
+                <span class="summary-value">{{userPoints}}</span>
+              </div>
+              <div class="summary-row">
+                <span>Points to be redeemed:</span>
+                <span class="summary-value">-{{selectedReward?.pointsCost}}</span>
+              </div>
+              <div class="divider"></div>
+              <div class="summary-row total">
+                <span>Remaining balance:</span>
+                <span class="summary-value">{{userPoints - (selectedReward?.pointsCost || 0)}}</span>
+              </div>
+            </div>
+          </div>
+  
+          <div class="form-actions">
+            <button mat-button (click)="closeConfirmDialog()">Cancel</button>
+            <button 
+              mat-raised-button 
+              [disabled]="redeemInProgress"
+              (click)="redeemReward()">
+              <mat-spinner diameter="20" *ngIf="redeemInProgress"></mat-spinner>
+              <span *ngIf="!redeemInProgress">Confirm Redemption</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Decorative Elements -->
+    <div class="food-icon icon-1">
+      <mat-icon>restaurant</mat-icon>
+    </div>
+    <div class="food-icon icon-2">
+      <mat-icon>local_cafe</mat-icon>
+    </div>
+  </div>

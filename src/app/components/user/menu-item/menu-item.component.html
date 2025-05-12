@@ -1,0 +1,220 @@
+<!-- Success message with animation -->
+<div *ngIf="addToCartSuccess" class="success-message">
+  <i class="fas fa-check-circle"></i>
+  Item added to cart successfully!
+</div>
+
+<div class="item-detail-container">
+  <!-- Back button -->
+  <button (click)="goBack()" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Menu
+  </button>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading item details...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error-message">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>{{ error }}</p>
+    <button (click)="loadMenuItem(menuItem?.id || '')" class="retry-btn">Try Again</button>
+  </div>
+
+  <!-- Menu item details -->
+  <div *ngIf="!loading && !error && menuItem" class="item-details">
+    <div class="item-image-container">
+      <img [src]="menuItem.image || '/assets/egg-salad.jpeg'" alt="{{ menuItem.dishName }}" class="item-image">
+      <div class="category-badge">{{ menuItem.category }}</div>
+    </div>
+
+    <div class="item-info">
+      <h1 class="item-name">{{ menuItem.dishName }}</h1>
+      <p class="item-description">{{ menuItem.description }}</p>
+
+      <div class="item-meta">
+        <div class="meta-section">
+          <h3>Ingredients</h3>
+          <p>{{ menuItem.ingredients }}</p>
+        </div>
+        
+        <div class="meta-section">
+          <h3>Allergen Information</h3>
+          <p>{{ menuItem.allergenInfo }}</p>
+        </div>
+        
+        <div *ngIf="menuItem.servingTimes" class="meta-section">
+          <h3>Serving Times</h3>
+          <p>{{ menuItem.servingTimes }}</p>
+        </div>
+      </div>
+
+      <!-- Add-ons section -->
+      <div *ngIf="selectedAddOns.length > 0" class="addon-section">
+        <h3>Customize Your Order</h3>
+        <div class="addon-grid">
+          <div 
+            *ngFor="let addon of selectedAddOns"
+            class="addon-item"
+            [class.selected]="addon.selected"
+            (click)="toggleAddOn(addon)">
+            <div class="addon-checkbox">
+              <i *ngIf="addon.selected" class="fas fa-check"></i>
+            </div>
+            <div class="addon-info">
+              <div class="addon-name">{{ addon.name }}</div>
+              <div class="addon-price">+${{ addon.price.toFixed(2) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quantity and price section -->
+      <div class="quantity-price">
+        <div class="quantity-control">
+          <button (click)="decreaseQuantity()" [disabled]="quantity <= 1">-</button>
+          <span>{{ quantity }}</span>
+          <button (click)="increaseQuantity()">+</button>
+        </div>
+        
+        <div class="price-info">
+          <div class="price-row">
+            <span>Base Price:</span>
+            <span>${{ menuItem.price.toFixed(2) }}</span>
+          </div>
+          <div class="price-row">
+            <span>Service Fee:</span>
+            <span>${{ menuItem.serviceCost.toFixed(2) }}</span>
+          </div>
+          <div class="price-row total">
+            <span>Total:</span>
+            <span>${{ totalPrice.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="action-buttons">
+        <button (click)="addToCart()" class="add-cart-btn">
+          <i class="fas fa-shopping-cart"></i> Add to Cart
+        </button>
+        <button (click)="goToCart()" class="view-cart-btn">
+          <i class="fas fa-shopping-bag"></i> View Cart
+          <span *ngIf="cartItems.length > 0" class="cart-badge">{{ cartItems.length }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Panel -->
+<div class="cart-panel" [class.open]="isCartOpen">
+  <div class="cart-header">
+    <h2><i class="fas fa-shopping-bag"></i> Your Cart</h2>
+    <button (click)="closeCart()" class="close-cart-btn">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Order success message -->
+  <div *ngIf="orderSuccess" class="cart-success-message">
+    <i class="fas fa-check-circle"></i>
+    <h3>Order Placed Successfully!</h3>
+    <p>Your delicious meal will be ready soon.</p>
+  </div>
+
+  <!-- Cart loading state -->
+  <div *ngIf="cartLoading" class="cart-loading">
+    <div class="cart-spinner"></div>
+    <p>Loading your cart...</p>
+  </div>
+
+  <!-- Cart error state -->
+  <div *ngIf="cartError" class="cart-error">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ cartError }}</p>
+    <button (click)="loadCartItems()" class="retry-cart-btn">Try Again</button>
+  </div>
+
+  <!-- Empty cart state -->
+  <div *ngIf="!cartLoading && !cartError && cartItems.length === 0" class="empty-cart">
+    <div class="empty-cart-icon">
+      <i class="fas fa-shopping-basket"></i>
+    </div>
+    <h3>Your cart is empty</h3>
+    <p>Add some delicious items to get started!</p>
+    <button (click)="closeCart()" class="continue-shopping-btn">
+      Continue Browsing
+    </button>
+  </div>
+
+  <!-- Cart items -->
+  <div *ngIf="!cartLoading && !cartError && cartItems.length > 0" class="cart-content">
+    <div class="cart-items">
+      <div *ngFor="let item of cartItems" class="cart-item" [@fadeInOut]>
+        <div class="cart-item-image">
+          <img [src]="item.menu.image || '/assets/curry-dish.webp'" alt="{{ item.menu.dishName }}">
+        </div>
+        
+        <div class="cart-item-info">
+          <h3>{{ item.menu.dishName }}</h3>
+          <div class="cart-item-price-qty">
+            <span class="cart-item-price">${{ item.menu.price.toFixed(2) }}</span>
+            <span class="cart-item-qty">x {{ item.quantity }}</span>
+          </div>
+        </div>
+        
+        <button (click)="removeCartItem(item.menuId)" class="remove-item-btn">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="order-type-selection">
+      <h4>Order Type</h4>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="orderType" value="dine-in" [(ngModel)]="selectedOrderType"> Dine-in
+        </label>
+        <label>
+          <input type="radio" name="orderType" value="take-away" [(ngModel)]="selectedOrderType"> Take-away
+        </label>
+        <label>
+          <input type="radio" name="orderType" value="delivery" [(ngModel)]="selectedOrderType"> Delivery
+        </label>
+      </div>
+    </div>
+
+    <div class="cart-summary">
+      <div class="cart-summary-row">
+        <span>Subtotal:</span>
+        <span>${{ cartTotal.toFixed(2) }}</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Service Fee:</span>
+        <span>${{ (cartTotal * 0.05).toFixed(2) }}</span>
+      </div>
+      <div class="cart-summary-row total">
+        <span>Total:</span>
+        <span>${{ (cartTotal * 1.05).toFixed(2) }}</span>
+      </div>
+    </div>
+
+    <div class="cart-actions">
+      <button (click)="clearCart()" class="clear-cart-btn">
+        <i class="fas fa-trash"></i> Clear Cart
+      </button>
+      <button (click)="placeOrder()" class="place-order-btn">
+        <i class="fas fa-utensils"></i> Place Order
+      </button>
+      <button routerLink="/pay"  class="place-order-btn">
+        <i class="fas fa-utensils"></i> Pay For Order
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay backdrop when cart is open -->
+<div *ngIf="isCartOpen" class="cart-backdrop" (click)="closeCart()"></div>

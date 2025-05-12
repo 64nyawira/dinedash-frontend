@@ -1,0 +1,93 @@
+<div class="payment-container">
+    <div class="payment-card">
+      <div class="card-header">
+        <h2>Make Payment</h2>
+        <div class="payment-icon">
+          <mat-icon>payments</mat-icon>
+        </div>
+      </div>
+  
+      <form (ngSubmit)="openConfirmation()">
+        <div class="form-field">
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input matInput [formControl]="phoneNumberControl" placeholder="e.g. 254XXXXXXXXX" type="tel">
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error *ngIf="phoneNumberControl.hasError('required')">
+              Phone number is required
+            </mat-error>
+            <mat-error *ngIf="phoneNumberControl.hasError('pattern')">
+              Please enter a valid phone number (10-12 digits)
+            </mat-error>
+          </mat-form-field>
+        </div>
+  
+        <div class="form-field">
+          <mat-form-field appearance="outline">
+            <mat-label>Amount</mat-label>
+            <input matInput [formControl]="amountControl" placeholder="Enter amount" type="number">
+            <mat-icon matSuffix>attach_money</mat-icon>
+            <mat-error *ngIf="amountControl.hasError('required')">
+              Amount is required
+            </mat-error>
+            <mat-error *ngIf="amountControl.hasError('min')">
+              Minimum amount is 5
+            </mat-error>
+            <mat-error *ngIf="amountControl.hasError('max')">
+              Maximum amount is 150,000
+            </mat-error>
+          </mat-form-field>
+        </div>
+  
+        <div class="actions-row">
+          <button mat-button type="button" (click)="resetForm()">
+            <mat-icon>refresh</mat-icon> Reset
+          </button>
+          <button mat-raised-button type="submit" color="primary" [disabled]="!formValid">
+            <mat-icon>send</mat-icon> Pay Now
+          </button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showConfirmationModal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Confirm Payment</h2>
+          <button mat-icon-button (click)="cancelConfirmation()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        
+        <div class="modal-content">
+          <div class="payment-details">
+            <h3>Payment Details</h3>
+            
+            <div class="points-summary">
+              <div class="summary-row">
+                <span>Phone Number:</span>
+                <span>{{ formattedPhoneNumber }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Amount:</span>
+                <span class="amount">{{ formattedAmount }}</span>
+              </div>
+            </div>
+            
+            <p>Are you sure you want to send this payment to the specified phone number?</p>
+            
+            <div class="modal-actions">
+              <button mat-button (click)="cancelConfirmation()">
+                <mat-icon>cancel</mat-icon> Cancel
+              </button>
+              <button mat-raised-button color="primary" (click)="processPayment()" [disabled]="isProcessing">
+                <mat-spinner *ngIf="isProcessing" diameter="20"></mat-spinner>
+                <span *ngIf="!isProcessing"><mat-icon>check_circle</mat-icon> Confirm Payment</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,29 @@
+<div class="main">
+    <div class="container">
+        <h3>Verify Reset Code</h3>
+        <p>Enter the reset code sent to your email.</p>
+
+        <!-- ✅ Show success message -->
+        <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+        </div>
+
+        <!-- ✅ Show error message -->
+        <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+        </div>
+
+        <!-- ✅ Pass form reference -->
+        <form #verifyCodeForm="ngForm" (ngSubmit)="verifyCode(verifyCodeForm)" novalidate>
+            <label for="code">Reset Code:</label>
+            <input type="text" id="code" name="code" [(ngModel)]="formData.code" #code="ngModel" required placeholder="Enter code">
+            
+            <div *ngIf="code.invalid && (code.dirty || code.touched)" class="error-text">
+                <div *ngIf="code.hasError('required')">Code is required</div>
+            </div>
+
+            <button type="submit" [disabled]="verifyCodeForm.invalid">Verify</button>
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,234 @@
+<div class="background"></div>
+<div class="container">
+  <button class="close-btn" (click)="cancelForm()">✖</button>
+  <h2>Create a New Menu Item</h2>
+
+  <div class="step-indicator">
+    <div class="step" [ngClass]="{ 'active': step === 1, 'completed': step > 1 }">
+      <div class="step-number">{{ step > 1 ? '✓' : '1' }}</div>
+      <div class="step-title">Menu Information</div>
+    </div>
+    <div class="step" [ngClass]="{ 'active': step === 2, 'completed': step > 2 }">
+      <div class="step-number">{{ step > 2 ? '✓' : '2' }}</div>
+      <div class="step-title">Pricing</div>
+    </div>
+  </div>
+
+  <form #menuForm="ngForm" (ngSubmit)="submitForm()" novalidate>
+    <!-- Step 1: Menu Information -->
+    <div *ngIf="step === 1" [@slideAnimation]="'in'">
+      <h3>Menu Information</h3>
+
+      <div class="field-container">
+        <label for="dishName">Dish Name</label>
+        <input 
+          type="text" 
+          id="dishName" 
+          [(ngModel)]="formData.dishName" 
+          name="dishName" 
+          required 
+          #dishName="ngModel"
+          placeholder="Enter dish name"
+          [ngClass]="{'is-invalid': dishName.invalid && dishName.touched}"
+        >
+        <div class="error" *ngIf="dishName.invalid && dishName.touched">Dish name is required</div>
+      </div>
+
+      <div class="field-container">
+        <label for="description">Description</label>
+        <textarea 
+          id="description" 
+          [(ngModel)]="formData.description" 
+          name="description" 
+          required 
+          #description="ngModel"
+          placeholder="Describe your dish..."
+          [ngClass]="{'is-invalid': description.invalid && description.touched}"
+        ></textarea>
+        <div class="error" *ngIf="description.invalid && description.touched">Description is required</div>
+      </div>
+
+      <div class="field-container">
+        <label for="category">Category</label>
+        <select 
+          id="category" 
+          [(ngModel)]="formData.category" 
+          name="category" 
+          required 
+          #category="ngModel"
+          [ngClass]="{'is-invalid': category.invalid && category.touched}"
+        >
+          <option value="" disabled selected>Select Category</option>
+          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+        <div class="error" *ngIf="category.invalid && category.touched">Category is required</div>
+      </div>
+
+      <div class="field-container">
+        <label for="ingredients">Ingredients</label>
+        <input 
+          type="text" 
+          id="ingredients" 
+          [(ngModel)]="formData.ingredients" 
+          name="ingredients"
+          placeholder="Comma separated list of ingredients"
+        >
+      </div>
+
+      <div class="field-container">
+        <label for="allergenInfo">Allergen Information</label>
+        <input 
+          type="text" 
+          id="allergenInfo" 
+          [(ngModel)]="formData.allergenInfo" 
+          name="allergenInfo"
+          placeholder="e.g., Contains nuts, dairy, gluten"
+        >
+      </div>
+
+      <div class="field-container">
+        <label>Serving Times</label>
+        <div class="custom-dropdown">
+          <button 
+            type="button" 
+            class="dropdown-toggle" 
+            [ngClass]="{'active': showServingTimes}" 
+            (click)="toggleServingTimesDropdown()"
+          >
+            {{ formData.selectedServingTimes.length ? formData.selectedServingTimes.length + ' selected' : 'Select serving times' }}
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-menu" [ngClass]="{'show': showServingTimes}">
+            <div class="dropdown-item" *ngFor="let time of servingTimes">
+              <input 
+                type="checkbox" 
+                [id]="'time-' + time" 
+                [checked]="formData.selectedServingTimes.includes(time)" 
+                (change)="selectServingTime(time, $event)"
+              >
+              <label [for]="'time-' + time">{{ time }}</label>
+            </div>
+          </div>
+        </div>
+        <div class="selected-items" *ngIf="formData.selectedServingTimes.length">
+          <div class="selected-tag" *ngFor="let time of formData.selectedServingTimes">
+            {{ time }}
+            <span class="tag-remove" (click)="removeServingTime(time)">✕</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <label>Add-ons (Optional)</label>
+        <div class="custom-dropdown">
+          <button 
+            type="button" 
+            class="dropdown-toggle" 
+            [ngClass]="{'active': showAddOns}" 
+            (click)="toggleAddOnsDropdown()"
+          >
+            {{ formData.selectedAddOns.length ? formData.selectedAddOns.length + ' selected' : 'Select add-ons' }}
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-menu" [ngClass]="{'show': showAddOns}">
+            <div class="dropdown-item" *ngFor="let addon of addOnsList">
+              <input 
+                type="checkbox" 
+                [id]="'addon-' + addon" 
+                [checked]="formData.selectedAddOns.includes(addon)" 
+                (change)="selectAddOn(addon, $event)"
+              >
+              <label [for]="'addon-' + addon">{{ addon }}</label>
+            </div>
+          </div>
+        </div>
+        <div class="selected-items" *ngIf="formData.selectedAddOns.length">
+          <div class="selected-tag" *ngFor="let addon of formData.selectedAddOns">
+            {{ addon }}
+            <span class="tag-remove" (click)="removeAddOn(addon)">✕</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <label>Image Upload</label>
+        <div class="file-upload" [ngClass]="{'has-file': imageSelected}">
+          <span class="file-upload-icon">📷</span>
+          <span class="file-upload-label">{{ imageSelected ? 'Change image' : 'Drop image here or click to browse' }}</span>
+          <input type="file" accept="image/*" id="fileUpload" (change)="onFileSelected($event)">
+          <span class="file-name" *ngIf="imageSelected">{{ fileName }}</span>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="btn-secondary" (click)="cancelForm()">Cancel</button>
+        <button 
+          type="button" 
+          class="btn-primary" 
+          (click)="nextStep()" 
+          [disabled]="dishName.invalid || description.invalid || category.invalid"
+        >
+          Next Step
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Pricing -->
+    <div *ngIf="step === 2" [@slideAnimation]="'in'">
+      <h3>Pricing Information</h3>
+
+      <div class="field-container">
+        <label for="price">Base Price ($)</label>
+        <input 
+          type="number" 
+          id="price" 
+          [(ngModel)]="formData.price" 
+          name="price" 
+          required 
+          min="0" 
+          step="0.01"
+          #price="ngModel"
+          placeholder="0.00"
+          [ngClass]="{'is-invalid': price.invalid && price.touched}"
+          (input)="calculateTotal()"
+        >
+        <div class="error" *ngIf="price.invalid && price.touched">
+          <span *ngIf="price.errors?.['required']">Price is required</span>
+          <span *ngIf="price.errors?.['min']">Price cannot be negative</span>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <label for="serviceCost">Service Cost ($)</label>
+        <input 
+          type="number" 
+          id="serviceCost" 
+          [(ngModel)]="formData.serviceCost" 
+          name="serviceCost" 
+          min="0" 
+          step="0.01"
+          placeholder="0.00"
+          (input)="calculateTotal()"
+        >
+      </div>
+
+      <div class="total-display">
+        <h4>Total Price</h4>
+        <div class="total-amount">{{ formData.total | currency }}</div>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="btn-secondary" (click)="prevStep()">Back</button>
+        <button 
+          type="submit" 
+          class="btn-primary" 
+          [disabled]="price.invalid"
+        >
+          Add Menu Item
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+</div>

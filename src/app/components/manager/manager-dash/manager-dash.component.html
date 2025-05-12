@@ -1,0 +1,195 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-container">
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner">
+      <div class="knife"></div>
+      <div class="fork"></div>
+    </div>
+    <p>Preparing your dashboard...</p>
+  </div>
+
+  <!-- Dashboard Header -->
+  <header class="dashboard-header">
+    <div class="header-title">
+      <span class="decorative-line"></span>
+      <h1>Hello, {{name}}!</h1>
+      <span class="decorative-line"></span>
+    </div>
+    <div class="date-selector">
+      <div class="date-input-wrapper">
+        <i class="fas fa-calendar"></i>
+        <input type="date" class="date-input">
+      </div>
+      <button class="refresh-btn">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- Income Summary Cards -->
+  <div class="income-summary">
+    <div class="income-card">
+      <div class="income-icon">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+      <div class="income-details">
+        <h3>Today's Income</h3>
+        <h2>${{todayIncome.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</h2>
+        <p [ngClass]="{'positive': todayIncome > dailyAverage, 'negative': todayIncome < dailyAverage}">
+          <i *ngIf="todayIncome > dailyAverage" class="fas fa-arrow-up"></i>
+          <i *ngIf="todayIncome < dailyAverage" class="fas fa-arrow-down"></i>
+          {{Math.abs((todayIncome - dailyAverage) / dailyAverage * 100).toFixed(1)}}% vs avg
+        </p>
+      </div>
+    </div>
+
+    <div class="income-card">
+      <div class="income-icon">
+        <i class="fas fa-utensils"></i>
+      </div>
+      <div class="income-details">
+        <h3>Daily Average</h3>
+        <h2>${{dailyAverage.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</h2>
+      </div>
+    </div>
+
+    <div class="income-card">
+      <div class="income-icon">
+        <i class="fas fa-wine-glass-alt"></i>
+      </div>
+      <div class="income-details">
+        <h3>Monthly Average</h3>
+        <h2>${{monthlyAverage.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</h2>
+      </div>
+    </div>
+
+    <div class="income-card">
+      <div class="income-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="income-details">
+        <h3>Yearly Average</h3>
+        <h2>${{yearlyAverage.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}}</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Specials Banner -->
+  <div class="menu-specials">
+    <div class="specials-icon">
+      <i class="fas fa-star"></i>
+    </div>
+    <h3>Today's Specials Performance</h3>
+    <div class="specials-progress">
+      <div class="progress-bar" [style.width.%]="85"></div>
+    </div>
+    <p>85% of today's special menu items sold!</p>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid">
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>Weekly Revenue</h3>
+        <div class="vintage-decoration"></div>
+      </div>
+      <canvas id="incomeChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>Menu Categories</h3>
+        <div class="vintage-decoration"></div>
+      </div>
+      <canvas id="categoryChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>Popular Dishes</h3>
+        <div class="vintage-decoration"></div>
+      </div>
+      <canvas id="topMealsChart"></canvas>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="chart-container table-container">
+      <div class="chart-header">
+        <h3>Menu Analysis</h3>
+        <div class="vintage-decoration"></div>
+      </div>
+      <table class="category-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Orders</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of mealCategories">
+            <td>
+              <span class="category-name">{{category.name}}</span>
+            </td>
+            <td>{{category.count}}</td>
+            <td>
+              <div class="progress-container">
+                <div class="progress-bar" [style.width.%]="category.percentage"></div>
+                <span>{{category.percentage}}%</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Meal Rankings -->
+  <div class="meal-rankings">
+    <div class="ranking-container">
+      <div class="ranking-header">
+        <div class="header-decoration">
+          <i class="fas fa-award"></i>
+        </div>
+        <h3>Top Performers</h3>
+      </div>
+      <ul class="meal-list">
+        <li *ngFor="let meal of topMeals; let i = index" class="meal-item">
+          <div class="rank">{{i + 1}}</div>
+          <div class="meal-info">
+            <h4>{{meal.name}}</h4>
+            <span class="category-tag">{{meal.category}}</span>
+          </div>
+          <div class="meal-count">{{meal.count}} orders</div>
+        </li>
+      </ul>
+      <div class="vintage-stamp">
+        <span>Chef's Pride</span>
+      </div>
+    </div>
+
+    <div class="ranking-container">
+      <div class="ranking-header">
+        <div class="header-decoration">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h3>Needs Attention</h3>
+      </div>
+      <ul class="meal-list">
+        <li *ngFor="let meal of bottomMeals; let i = index" class="meal-item">
+          <div class="rank">{{i + 1}}</div>
+          <div class="meal-info">
+            <h4>{{meal.name}}</h4>
+            <span class="category-tag">{{meal.category}}</span>
+          </div>
+          <div class="meal-count">{{meal.count}} orders</div>
+        </li>
+      </ul>
+      <div class="vintage-stamp red-stamp">
+        <span>Menu Review</span>
+      </div>
+    </div>
+  </div>
+</div>

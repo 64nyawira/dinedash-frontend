@@ -1,0 +1,250 @@
+/* Restaurant theme variables */
+:root {
+  --primary-color: #8b2801;
+  --secondary-color: #ffc107;
+  --text-color: #333;
+  --light-bg: #fff9f0;
+  --border-color: #e2d7c5;
+  --success-color: #218838;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --table-hover: #fff0dd;
+  --shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Main container */
+.orders-container {
+  background-color: var(--light-bg);
+  background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path fill="%234ECDC4" fill-opacity="0.05" d="M50 0 L100 50 L50 100 L0 50 Z" /></svg>');
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  min-height: 80vh;
+  font-family: 'Georgia', serif;
+  color: var(--text-color);
+}
+
+/* Header styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 15px;
+}
+
+.header h1 {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin: 0;
+  font-weight: bold;
+}
+
+/* Search bar styling */
+.search-bar {
+  position: relative;
+  max-width: 300px;
+  width: 100%;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border: 2px solid var(--border-color);
+  border-radius: 30px;
+  font-size: 16px;
+  background-color: white;
+  transition: all 0.3s;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(139, 40, 1, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  font-size: 18px;
+}
+
+/* Table styling */
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background-color: white;
+}
+
+.orders-table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.orders-table td {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.orders-table tr:hover {
+  background-color: var(--table-hover);
+}
+
+.orders-table tr.cancelled {
+  background-color: rgba(220, 53, 69, 0.1);
+  text-decoration: line-through;
+  color: #777;
+}
+
+/* Status styling */
+.status span {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: var(--warning-color);
+  color: #856404;
+}
+
+.status-completed {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.status-cancelled {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+/* Select dropdown styling */
+select {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.3s;
+  min-width: 120px;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+select:disabled {
+  background-color: #e9ecef;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Footer styling */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-style: italic;
+  color: #6c757d;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: var(--primary-color);
+}
+
+.spinner {
+  border: 4px solid rgba(139, 40, 1, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid var(--primary-color);
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* No orders message */
+.no-orders {
+  text-align: center;
+  padding: 50px 0;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .orders-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .search-bar {
+    margin-top: 15px;
+    max-width: 100%;
+  }
+}
+
+/* Dish list styling */
+.dish-list {
+  max-width: 200px;
+}
+
+.dish-list div {
+  margin-bottom: 4px;
+}
+
+.dish-list div:last-child {
+  margin-bottom: 0;
+}
+
+/* Other specific column styles */
+.order-id {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.customer-name {
+  font-weight: bold;
+}
+
+.total-amount {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.loyalty-points {
+  color: #6c757d;
+  font-weight: bold;
+}

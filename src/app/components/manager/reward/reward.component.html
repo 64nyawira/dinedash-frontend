@@ -1,0 +1,143 @@
+<app-navbar></app-navbar>
+<!-- reward.component.html -->
+<div class="rewards-container">
+    <!-- Header Section -->
+    <div class="rewards-header">
+      <div class="title-section">
+        <h1>Loyalty Rewards Management</h1>
+        <p>Create and manage rewards that your customers can redeem with their loyalty points</p>
+      </div>
+      <button mat-raised-button class="create-button" (click)="openCreateForm()">
+        <mat-icon>add</mat-icon>
+        Create Reward
+      </button>
+    </div>
+  
+    <!-- Search Section -->
+    <div class="search-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search rewards by name or points</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (input)="searchRewards()" placeholder="Free Dessert, 50...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+  
+    <!-- Rewards List Section -->
+    <div class="rewards-content">
+      <!-- Loading Indicator -->
+      <div class="loading-indicator" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading rewards...</p>
+      </div>
+  
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!loading && filteredRewards.length === 0">
+        <mat-icon>card_giftcard</mat-icon>
+        <h3>No rewards found</h3>
+        <p *ngIf="searchTerm">No rewards match your search criteria. Try a different search term.</p>
+        <p *ngIf="!searchTerm">Start creating rewards for your customers to redeem with their loyalty points.</p>
+        <button mat-raised-button (click)="openCreateForm()">Create First Reward</button>
+      </div>
+  
+      <!-- Rewards Grid -->
+      <div class="rewards-grid" *ngIf="!loading && filteredRewards.length > 0">
+        <div class="reward-card" *ngFor="let reward of filteredRewards" @fadeInUp>
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>
+                <span>{{reward.name}}</span>
+                <div class="points-badge">
+                  <mat-icon>stars</mat-icon>
+                  <span>{{reward.pointsCost}} points</span>
+                </div>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>{{reward.description}}</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="openEditForm(reward)">
+                <mat-icon>edit</mat-icon> Edit
+              </button>
+              <button mat-button color="warn" (click)="openDeleteConfirm(reward.id)">
+                <mat-icon>delete</mat-icon> Delete
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Create/Edit Form Modal -->
+    <div class="modal-overlay" *ngIf="showForm" @fadeIn>
+      <div class="modal-container reward-form-modal" @fadeInUp>
+        <div class="modal-header">
+          <h2>{{formMode === 'create' ? 'Create New Reward' : 'Edit Reward'}}</h2>
+          <button mat-icon-button (click)="closeForm()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="modal-content">
+          <form [formGroup]="rewardForm" (ngSubmit)="submitForm()">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Reward Name</mat-label>
+              <input matInput formControlName="name" placeholder="Free Dessert">
+              <mat-error *ngIf="rewardForm.get('name')?.hasError('required')">Name is required</mat-error>
+              <mat-error *ngIf="rewardForm.get('name')?.hasError('minlength')">Name must be at least 3 characters</mat-error>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="4" placeholder="Redeem this reward for a free dessert of your choice"></textarea>
+              <mat-error *ngIf="rewardForm.get('description')?.hasError('required')">Description is required</mat-error>
+              <mat-error *ngIf="rewardForm.get('description')?.hasError('minlength')">Description must be at least 5 characters</mat-error>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Points Cost</mat-label>
+              <input matInput type="number" formControlName="pointsCost" placeholder="50">
+              <mat-error *ngIf="rewardForm.get('pointsCost')?.hasError('required')">Points cost is required</mat-error>
+              <mat-error *ngIf="rewardForm.get('pointsCost')?.hasError('min')">Points cost must be at least 1</mat-error>
+            </mat-form-field>
+  
+            <div class="form-actions">
+              <button type="button" mat-button (click)="closeForm()">Cancel</button>
+              <button type="submit" mat-raised-button [disabled]="rewardForm.invalid">
+                {{formMode === 'create' ? 'Create Reward' : 'Update Reward'}}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirm" @fadeIn>
+      <div class="modal-container delete-confirm-modal" @fadeInUp>
+        <div class="modal-header">
+          <h2>Confirm Deletion</h2>
+          <button mat-icon-button (click)="closeDeleteConfirm()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="modal-content">
+          <div class="warning-icon">
+            <mat-icon>warning</mat-icon>
+          </div>
+          <p>Are you sure you want to delete this reward? This action cannot be undone.</p>
+          <div class="form-actions">
+            <button mat-button (click)="closeDeleteConfirm()">Cancel</button>
+            <button mat-raised-button color="warn" (click)="deleteReward()">Delete Reward</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Decorative Elements -->
+    <div class="food-icon icon-1">
+      <mat-icon>restaurant</mat-icon>
+    </div>
+    <div class="food-icon icon-2">
+      <mat-icon>local_cafe</mat-icon>
+    </div>
+  </div>

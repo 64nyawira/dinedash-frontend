@@ -1,0 +1,122 @@
+<app-navbar></app-navbar>
+<div class="reservations-container">
+    <div class="header">
+      <h1>Table Reservations</h1>
+      <div class="search-bar">
+        <input 
+          type="text" 
+          placeholder="Search by customer or table name..." 
+          [(ngModel)]="searchQuery"
+          (input)="onSearch($event)"
+        />
+        <i class="search-icon">🔍</i>
+      </div>
+    </div>
+  
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-content">
+          <div class="stat-value">{{getActiveUpcomingCount()}}</div>
+          <div class="stat-label">Upcoming Reservations</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <div class="stat-value">{{getCompletedCount()}}</div>
+          <div class="stat-label">Completed</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">❌</div>
+        <div class="stat-content">
+          <div class="stat-value">{{getCancelledCount()}}</div>
+          <div class="stat-label">Cancelled</div>
+        </div>
+      </div>
+  
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <div class="stat-value">{{getUpcomingGuestsCount()}}</div>
+          <div class="stat-label">Upcoming Guests</div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="loading-indicator" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Loading reservations...</p>
+    </div>
+  
+    <div class="reservations-content" *ngIf="!isLoading">
+      <div class="no-reservations" *ngIf="filteredReservations.length === 0">
+        <p *ngIf="searchQuery">No reservations found matching "{{searchQuery}}"</p>
+        <p *ngIf="!searchQuery">No reservations available at this time</p>
+      </div>
+  
+      <table class="reservations-table" *ngIf="filteredReservations.length > 0">
+        <thead>
+          <tr>
+            <th>Table</th>
+            <th>Customer</th>
+            <th>Reservation Time</th>
+            <th>Time from Now</th>
+            <th>Seats</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reservation of filteredReservations" 
+              [ngClass]="{
+                'cancelled': reservation.status === 'cancelled',
+                'completed': reservation.status === 'completed',
+                'upcoming': isUpcoming(reservation.reservationTime) && reservation.status === 'active'
+              }">
+            <td class="table-name">
+              <strong>{{reservation.table?.name || 'Unknown Table'}}</strong>
+              <div class="table-description">{{reservation.table?.description || 'No description'}}</div>
+            </td>
+            <td class="customer-name">
+              {{reservation.user?.name || 'Unknown Customer'}}
+              <div class="customer-email">{{reservation.user?.email || 'No email'}}</div>
+            </td>
+            <td class="reservation-time">
+              {{formatReservationTime(reservation.reservationTime)}}
+            </td>
+            <td class="time-from-now" [ngClass]="{'urgent': getTimeFromNow(reservation.reservationTime).includes('minute') && reservation.status === 'active'}">
+              {{getTimeFromNow(reservation.reservationTime)}}
+            </td>
+            <td class="seats">
+              <span class="seat-count">{{reservation.table?.capacity || 0}}</span>
+              <span class="seat-icon" *ngFor="let i of [].constructor(Math.min(reservation.table?.capacity || 0, 6))">🪑</span>
+            </td>
+            <td class="status">
+              <span [ngClass]="getStatusClass(reservation.status)">{{reservation.status}}</span>
+            </td>
+            <td class="actions">
+              <button 
+                class="cancel-btn" 
+                *ngIf="reservation.status === 'active' && isUpcoming(reservation.reservationTime)"
+                (click)="cancelReservation(reservation)">
+                Cancel
+              </button>
+              <span *ngIf="reservation.status !== 'active' || !isUpcoming(reservation.reservationTime)" class="no-action-needed">
+                No action needed
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="footer">
+      <div class="reservation-count">
+        <p>Showing {{filteredReservations.length}} of {{reservations.length}} reservations</p>
+      </div>
+    </div>
+  </div>

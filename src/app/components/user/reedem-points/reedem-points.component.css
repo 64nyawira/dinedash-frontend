@@ -1,0 +1,471 @@
+/* redeem-points.component.css */
+
+/* Main Container */
+.redeem-container {
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    max-width: 1200px;
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path fill="%234ECDC4" fill-opacity="0.05" d="M50 0 L100 50 L50 100 L0 50 Z" /></svg>');
+
+    margin: 30px auto;
+    padding: 20px;
+    color: #333;
+    position: relative;
+  }
+  
+  /* Points Card */
+  .points-card {
+    background: linear-gradient(135deg, #ff6b35 0%, #f9a03f 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    color: white;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s ease;
+  }
+  
+  .points-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+    transform: rotate(30deg);
+    pointer-events: none;
+  }
+  
+  .points-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .points-title {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .points-title h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .points-value {
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+  
+  .points-value mat-icon {
+    margin-right: 10px;
+    font-size: 32px;
+    height: 32px;
+    width: 32px;
+  }
+  
+  .points-value span {
+    margin-right: 5px;
+  }
+  
+  .points-value mat-spinner {
+    margin-right: 10px;
+  }
+  
+  .level-badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .progress-container {
+    margin-top: 15px;
+  }
+  
+  .next-level {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+  
+  /* Rewards Section */
+  .rewards-section {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    padding: 30px;
+    position: relative;
+  }
+  
+  .rewards-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(to bottom, #ff6b35, #f9a03f);
+  }
+  
+  .rewards-header {
+    margin-bottom: 25px;
+  }
+  
+  .rewards-header h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    color: #5c3c27;
+  }
+  
+  .rewards-header p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+  }
+  
+  /* Controls Section */
+  .controls-section {
+    margin-bottom: 30px;
+  }
+  
+  .search-field {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .filter-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .filter-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .filter-buttons button {
+    color: #5c3c27;
+    border-radius: 50px;
+    font-weight: 500;
+    padding: 5px 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-buttons button.active {
+    background-color: rgba(255, 107, 53, 0.1);
+    color: #ff6b35;
+    font-weight: 600;
+  }
+  
+  .sort-dropdown {
+    display: flex;
+    align-items: center;
+    color: #5c3c27;
+  }
+  
+  .sort-dropdown span {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+  
+  .sort-dropdown select {
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: #5c3c27;
+    cursor: pointer;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    transition: all 0.3s ease;
+  }
+  
+  .sort-dropdown select:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+  }
+  
+  /* Rewards Grid */
+  .rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+  }
+  
+  .reward-card {
+    transition: all 0.4s ease;
+    position: relative;
+  }
+  
+  .reward-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .reward-card mat-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .reward-card mat-card.unavailable {
+    opacity: 0.8;
+    background-color: #f9f9f9;
+  }
+  
+  .reward-card mat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(to bottom, #ff6b35, #f9a03f);
+  }
+  
+  .card-ribbon {
+    position: absolute;
+    top: 15px;
+    right: -5px;
+    z-index: 1;
+  }
+  
+  .card-ribbon span {
+    display: inline-block;
+    padding: 5px 12px;
+    background: #27ae60;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-radius: 3px 0 0 3px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-ribbon span::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -5px;
+    width: 5px;
+    height: 5px;
+    background: #1e8449;
+    border-radius: 0 0 5px 0;
+    z-index: -1;
+  }
+  
+  .card-ribbon span::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    background: #27ae60;
+    border-radius: 0 5px 5px 0;
+  }
+  
+  mat-card-header {
+    padding: 20px 20px 0;
+  }
+  
+  ::ng-deep .mat-card-header-text {
+    margin: 0;
+    width: 100%;
+  }
+  
+  mat-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #5c3c27;
+    margin-bottom: 10px !important;
+  }
+  
+  mat-card-content {
+    padding: 10px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .reward-points {
+    display: flex;
+    align-items: center;
+    padding: 5px 12px;
+    width: fit-content;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #ff6b35 0%, #f9a03f 100%);
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 15px;
+  }
+  
+  .reward-points mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    margin-right: 5px;
+  }
+  
+  .reward-description {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    flex: 1;
+  }
+  
+  .points-needed {
+    display: flex;
+    align-items: center;
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: auto;
+    padding: 8px 0;
+  }
+  
+  .points-needed mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    margin-right: 5px;
+  }
+  
+  mat-card-actions {
+    padding: 0 20px 20px;
+    margin: 0;
+  }
+  
+  mat-card-actions button {
+    width: 100%;
+    background: linear-gradient(135deg, #ff6b35 0%, #f9a03f 100%);
+    color: white;
+    border-radius: 50px;
+    padding: 8px 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  mat-card-actions button:hover:not([disabled]) {
+    background: linear-gradient(135deg, #f9a03f, #ff6b35);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(255, 107, 53, 0.4);
+  }
+  
+  mat-card-actions button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  mat-card-actions button mat-icon {
+    margin-right: 5px;
+  }
+  
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-container {
+    background-color: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .modal-header h2 {
+    margin: 0;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    color: #5c3c27;
+    font-size: 20px;
+  }
+  
+  .modal-content {
+    padding: 25px;
+  }
+  
+  .reward-details h3 {
+    margin: 0 0 15px 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #5c3c27;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .reward-cost {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #ff6b35;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .reward-cost mat-icon {
+    margin-right: 5px;
+  }
+  
+  .reward-details p {
+    margin: 0 0 20px 0;
+    color: #666;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  
+  .points-summary {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+  }

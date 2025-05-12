@@ -1,0 +1,28 @@
+<div class="main">
+    <div class="container">
+        <h3>Forgot Password</h3>
+        <p>Enter your email to receive a password reset code.</p>
+
+        <!-- ✅ Show success message -->
+        <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+        </div>
+
+        <!-- ✅ Show error message -->
+        <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+        </div>
+
+        <form #forgotPassForm="ngForm" (ngSubmit)="forgotPassword(forgotPassForm)" novalidate>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" [(ngModel)]="formData.email" #email="ngModel" required placeholder="example@yop.com">
+            
+            <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error-text">
+                <div *ngIf="email.hasError('required')">Email is required</div>
+                <div *ngIf="email.hasError('email')">Invalid email format</div>
+            </div>
+
+            <button type="submit" [disabled]="forgotPassForm.invalid">Send Reset Code</button>
+        </form>
+    </div>
+</div>

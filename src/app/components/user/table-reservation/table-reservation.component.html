@@ -1,0 +1,148 @@
+<app-user-navbar></app-user-navbar>
+<div class="reservation-container">
+    <!-- Header Section -->
+    <header class="header">
+      <div class="restaurant-logo">
+        <i class="fas fa-utensils"></i>
+        <h1>DineDash</h1>
+      </div>
+      <p class="tagline">Experience culinary excellence with our perfect table reservations</p>
+    </header>
+  
+   
+  
+    <!-- Success Message -->
+    <div *ngIf="message" class="message-box" [ngClass]="{'success': message.type === 'success', 'error': message.type === 'error'}">
+        <i *ngIf="message.type === 'success'" class="fas fa-check-circle"></i>
+        <i *ngIf="message.type === 'error'" class="fas fa-exclamation-circle"></i>
+        <p>{{ message.text }}</p>
+      </div>
+
+       <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button [class.active]="activeView === 'tables'" (click)="setActiveView('tables')" class="tab-button">
+          <i class="fas fa-chair"></i> Reserve a Table
+        </button>
+        <button [class.active]="activeView === 'history'" (click)="setActiveView('history')" class="tab-button">
+          <i class="fas fa-history"></i> Your Reservations
+        </button>
+      </div>
+  
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  
+    <!-- Tables View -->
+    <div *ngIf="activeView === 'tables' && !isLoading" [@slideInOut] class="tables-container">
+      <div class="reservation-form">
+        <h2>Make a Reservation</h2>
+        
+        <div class="form-group">
+          <label for="date">Date:</label>
+          <input 
+            type="date" 
+            id="date" 
+            name="date" 
+            [min]="currentDate" 
+            [(ngModel)]="reservationDate">
+        </div>
+        
+        <div class="form-group">
+          <label for="time">Time:</label>
+          <input 
+            type="time" 
+            id="time" 
+            name="time" 
+            [(ngModel)]="reservationTime">
+        </div>
+        
+        <div class="form-group">
+          <label for="capacity">Min. Guests:</label>
+          <select 
+            id="capacity" 
+            name="capacity" 
+            [(ngModel)]="capacityFilter" 
+            (change)="filterTablesByCapacity()">
+            <option [ngValue]="null">Any</option>
+            <option [ngValue]="2">2+</option>
+            <option [ngValue]="4">4+</option>
+            <option [ngValue]="6">6+</option>
+            <option [ngValue]="8">8+</option>
+          </select>
+        </div>
+        
+        <button 
+          class="book-button" 
+          [disabled]="!selectedTableId" 
+          (click)="makeReservation()">
+          <i class="fas fa-calendar-check"></i> Book Selected Table
+        </button>
+      </div>
+      
+      <div class="tables-grid">
+        <h2>Available Tables</h2>
+        <p *ngIf="filteredTables.length === 0" class="no-tables">No tables available matching your criteria.</p>
+        
+        <div class="table-cards">
+          <div 
+            *ngFor="let table of filteredTables" 
+            class="table-card" 
+            [class.selected]="selectedTableId === table.id"
+            [class.unavailable]="table.status === 'reserved'"
+            [@tableHover]="getTableState(table.id)"
+            (mouseenter)="setTableHoverState(table.id, true)"
+            (mouseleave)="setTableHoverState(table.id, false)"
+            (click)="table.status === 'available' && selectTable(table.id)">
+            
+            <div class="table-image">
+              <img [src]="table.image || 'assets/8-seater-table.jpg'" alt="Table Image">
+              <div class="status-badge" [class.available]="table.status === 'available'" [class.reserved]="table.status === 'reserved'">
+                {{ table.status }}
+              </div>
+            </div>
+            
+            <div class="table-details">
+              <h3>{{ table.name }}</h3>
+              <p class="capacity"><i class="fas fa-users"></i> Seats {{ table.capacity }}</p>
+              <p class="description">{{ table.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Reservation History View -->
+    <div *ngIf="activeView === 'history' && !isLoading" [@slideInOut] class="history-container">
+      <h2>Your Reservations</h2>
+      <p *ngIf="userReservations.length === 0" class="no-reservations">You have no reservations yet.</p>
+      
+      <div class="reservation-list">
+        <div *ngFor="let reservation of userReservations" class="reservation-card" [@fadeInOut]>
+          <div class="reservation-status" [class.active]="reservation.status === 'active'" [class.cancelled]="reservation.status === 'cancelled'">
+            {{ reservation.status }}
+          </div>
+          
+          <div class="reservation-details">
+            <h3>{{ reservation.table?.name || 'Table' }}</h3>
+            <p><i class="far fa-calendar-alt"></i> {{ formatReservationTime(reservation.reservationTime) }}</p>
+            <p><i class="fas fa-users"></i> Capacity: {{ reservation.table?.capacity || 'N/A' }}</p>
+            <p class="table-desc">{{ reservation.table?.description || 'No description available' }}</p>
+          </div>
+          
+          <div class="reservation-actions" *ngIf="reservation.status === 'active'">
+            <button class="cancel-button" (click)="cancelReservation(reservation.id)">
+              <i class="fas fa-times-circle"></i> Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2025 Bella Trattoria • <i class="fas fa-phone"></i> (555) 123-4567</p>
+      <p><i class="fas fa-map-marker-alt"></i> 123 Pasta Street, Foodville</p>
+    </footer>
+  </div>

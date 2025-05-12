@@ -1,0 +1,256 @@
+/* Common Styles for Auth Forms */
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('/assets/restaurant-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+h3 {
+  text-align: center;
+  color: #ff6b35;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+h3::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: #ff6b35;
+  margin: 8px auto 0;
+}
+
+.account {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 25px;
+  font-size: 15px;
+  color: #666;
+}
+
+.anchor {
+  color: #ff6b35;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.anchor:hover {
+  color: #5c3c27;
+  text-decoration: none;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  width: 350px;
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: all 0.4s ease;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, #ff6b35, #5c3c27);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #5c3c27;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+input, button {
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+input {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+input:focus {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+  outline: none;
+  background-color: #fff;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.05);
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: -14px;
+  margin-bottom: 14px;
+  animation: fadeIn 0.3s ease;
+}
+
+button {
+  background: linear-gradient(135deg, #ff6b35, #f9a03f);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  border-radius: 50px;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+button:hover {
+  background: linear-gradient(135deg, #f9a03f, #ff6b35);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(255, 107, 53, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s ease;
+}
+
+button:hover::after {
+  left: 100%;
+}
+
+.forgot-password {
+  text-align: right;
+  color: #5c3c27;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #ff6b35;
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Special Styling for Sign Up Form */
+.signup-form h3::after {
+  width: 70px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
+  
+  h3 {
+    font-size: 24px;
+  }
+  
+  input, button {
+    padding: 10px 12px;
+  }
+}
+
+/* Decorative Elements */
+.form-icon {
+  font-size: 24px;
+  margin-right: 8px;
+  color: #5c3c27;
+}
+
+/* Custom Checkbox Style (if needed) */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #ff6b35;
+}
+
+/* Food Icons Decoration */
+.food-icon {
+  position: absolute;
+  opacity: 0.1;
+  color: #5c3c27;
+}
+
+.icon-1 {
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  transform: rotate(15deg);
+}
+
+.icon-2 {
+  bottom: 20px;
+  left: 20px;
+  font-size: 25px;
+  transform: rotate(-10deg);
+}

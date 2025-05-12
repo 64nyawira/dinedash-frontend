@@ -1,0 +1,27 @@
+<div class="main">
+    <div class="container">
+        <h3>Login</h3>
+        <div class="account">
+            <p>Don't have an account yet?</p>
+            <p routerLink="/register" class="anchor">SignUp</p>
+        </div>
+
+        <form #loginForm="ngForm" (ngSubmit)="login()">
+            <label for="email">Email:</label>
+            <input type="email" #emailField="ngModel" [(ngModel)]="email" required email name="email" placeholder="example@yop.com">
+            <div *ngIf="emailField.invalid && (emailField.dirty || emailField.touched)" style="font-size:12px;color:red;margin-bottom:6px;">
+                <div *ngIf="emailField.hasError('required')">Email is required</div>
+                <div *ngIf="emailField.hasError('email')">Invalid email format</div>
+            </div>
+
+            <label for="password">Password:</label>
+            <input type="password" minlength="8" #passwordField="ngModel" [(ngModel)]="password" required name="password">
+            <div *ngIf="passwordField.invalid && (passwordField.dirty || passwordField.touched)" style="font-size:12px;color:red;margin-bottom:6px;">
+                <div *ngIf="passwordField.hasError('minlength')">Password must have 8 characters</div>
+            </div>
+
+            <button type="submit">Login</button>
+            <p><a routerLink="/forgot-pass" class="anchor">Forgot Password?</a></p>
+        </form>
+    </div>
+</div>

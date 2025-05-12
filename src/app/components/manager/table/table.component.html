@@ -1,0 +1,193 @@
+<app-navbar></app-navbar>
+
+<div class="restaurant-container">
+  <div class="header">
+    <h1>Manage Tables</h1>
+    <button 
+      (click)="toggleCreateForm()" 
+      class="create-btn" 
+      [disabled]="isCreateFormVisible"
+    >
+      <i class="fas fa-plus-circle mr-2"></i>
+      {{ isCreateFormVisible ? 'Form Open' : 'Create New Table' }}
+    </button>
+  </div>
+
+  <!-- Notification Toast -->
+  <div 
+    *ngIf="notification" 
+    class="notification" 
+    [ngClass]="{
+      'notification-success': notification.type === 'success', 
+      'notification-error': notification.type === 'error'
+    }"
+  >
+    {{ notification.message }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Create/Edit Form -->
+  <div 
+    *ngIf="isCreateFormVisible" 
+    class="form-overlay" 
+    [@fadeInOut]
+  >
+    <form 
+      [formGroup]="tableForm" 
+      (ngSubmit)="isEditMode ? updateTable() : createTable()" 
+      class="form-card"
+    >
+      <button 
+        type="button"
+        (click)="toggleCreateForm()" 
+        class="close-form-btn" 
+        aria-label="Close Form"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+
+      <h2>{{ isEditMode ? 'Edit Table' : 'Create New Table' }}</h2>
+
+      <div class="form-group">
+        <label for="tableName">Table Name</label>
+        <input 
+          id="tableName"
+          formControlName="name" 
+          placeholder="Enter table name"
+          [attr.aria-invalid]="hasError('name', 'required') || hasError('name', 'minlength')"
+        >
+        <div *ngIf="hasError('name', 'required')" class="error-message">
+          Table name is required
+        </div>
+        <div *ngIf="hasError('name', 'minlength')" class="error-message">
+          Table name must be at least 3 characters long
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tableCapacity">Capacity</label>
+        <input 
+          id="tableCapacity"
+          type="number" 
+          formControlName="capacity" 
+          placeholder="Number of seats"
+          [attr.aria-invalid]="hasError('capacity', 'min') || hasError('capacity', 'max')"
+        >
+        <div *ngIf="hasError('capacity', 'min')" class="error-message">
+          Capacity must be at least 1
+        </div>
+        <div *ngIf="hasError('capacity', 'max')" class="error-message">
+          Capacity cannot exceed 20
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="tableDescription">Description</label>
+        <textarea 
+          id="tableDescription"
+          formControlName="description" 
+          placeholder="Table description"
+          maxlength="200"
+        ></textarea>
+        <div class="char-count">
+          {{ tableForm.get('description')?.value?.length || 0 }}/200
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tableImage">Upload Image</label>
+        <input 
+          id="tableImage"
+          type="file" 
+          (change)="onFileSelected($event)" 
+          accept="image/jpeg,image/png,image/webp"
+        >
+        <div *ngIf="imagePreview" class="image-preview">
+          <img [src]="imagePreview" alt="Image Preview">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn">
+          {{ isEditMode ? 'Update Table' : 'Create Table' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table List -->
+  <div class="table-grid">
+    <div *ngFor="let table of tables" class="table-card">
+      <div class="table-image">
+        <img 
+          [src]="table.image || 'assets/images/default-table.jpg'" 
+          [alt]="table.name + ' table image'"
+        >
+      </div>
+
+      <div class="table-details">
+        <div class="table-header">
+          <h3>{{ table.name }}</h3>
+          <span 
+            class="status-badge"
+            [ngClass]="{
+              'status-available': table.status === 'available',
+              'status-reserved': table.status === 'reserved'
+            }"
+          >
+            {{ table.status }}
+          </span>
+        </div>
+
+        <p class="table-capacity">Capacity: {{ table.capacity }} persons</p>
+        <p class="table-description">{{ table.description }}</p>
+
+        <div class="table-actions">
+          <button 
+            (click)="editTable(table)"
+            class="icon-btn edit-btn"
+            aria-label="Edit Table"
+            title="Edit Table"
+          >
+            <i class="fas fa-edit" aria-hidden="true"></i>
+          </button>
+
+          <button 
+            (click)="deleteTable(table.id)"
+            class="icon-btn delete-btn"
+            aria-label="Delete Table"
+            title="Delete Table"
+          >
+            <i style="color:red;" class="fas fa-trash-alt" aria-hidden="true"></i>
+          </button>
+
+          <ng-container *ngIf="table.status === 'available'">
+            <button
+              (click)="changeTableStatus(table, 'reserved')"
+              class="icon-btn reserve-btn"
+              aria-label="Reserve Table"
+              title="Reserve Table"
+            >
+              <i style="color: green;" class="fas fa-check-circle" aria-hidden="true"></i>
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="table.status === 'reserved'">
+            <button
+              (click)="changeTableStatus(table, 'available')"
+              class="icon-btn available-btn"
+              aria-label="Make Table Available"
+              title="Make Table Available"
+            >
+              <i class="fas fa-times-circle" aria-hidden="true"></i>
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<!-- app.component.html -->
+<div class="main">
+  <div class="home-container">
+    <app-navbar></app-navbar> 
+    
+    <div class="hero-section">
+      <div class="hero-content">
+        <h1 class="animate-title">Delicious Meals, Delivered Fast</h1>
+        <p class="animate-subtitle">Order from the best restaurants near you</p>
+        <div class="buttons">
+          <button class="order-btn" routerlink="/login">Order Now</button>
+          <button class="reserve-btn" routerlink="/login">Reserve Table</button>
+        </div>
+      </div>
+    </div>
+    
+    <section id="about" class="about-section">
+      <h2 class="section-title">About Us</h2>
+      <div class="about-content">
+        <div class="about-image">
+          <img src="/assets/chef-cooking.webp" alt="Chef preparing food">
+        </div>
+        <div class="about-text">
+          <p>Welcome to <span class="highlight">DineDash Delivery</span>, where culinary excellence meets convenience.</p>
+          <p>Since 2018, we've been on a mission to transform the food delivery experience. Our platform connects you with over 200 premium restaurants across the city, ensuring you enjoy restaurant-quality meals in the comfort of your home.</p>
+          <p>What sets us apart is our commitment to:</p>
+          <ul>
+            <li><span class="highlight">Quality</span> - We partner only with restaurants that meet our strict quality standards</li>
+            <li><span class="highlight">Speed</span> - Our average delivery time is just 28 minutes</li>
+            <li><span class="highlight">Reliability</span> - 99.4% of our orders arrive exactly as requested</li>
+          </ul>
+          <button class="learn-more-btn">Learn More About Our Story</button>
+        </div>
+      </div>
+    </section>
+    
+    <section id="featured" class="featured-section">
+      <h2 class="section-title">Featured Offerings</h2>
+      <div class="stories-container">
+        <div class="story-grid">
+          <div *ngFor="let template of storyTemplates" class="story-item">
+            <div class="story-content" [ngStyle]="{'background-image': 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(' + template.imageUrl + ')'}">
+              <div class="dots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              
+              <div class="story-text">
+                <h2 class="title">{{template.title}}</h2>
+                <p class="subtext" *ngIf="template.subtext">{{template.subtext}}</p>
+                <p class="description" *ngIf="template.description">{{template.description}}</p>
+                
+                <button class="cta-button">{{template.buttonText}}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <app-footer></app-footer>
+</div>
