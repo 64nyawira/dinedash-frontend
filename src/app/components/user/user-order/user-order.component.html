@@ -54,7 +54,7 @@
               <mat-card-content>
                 <div class="order-details">
                   <div class="order-summary">
-                    <p>Total: ${{ order.totalAmount?.toFixed(2) || '0.00' }}</p>
+                    <p>Total: ${{ order.totalAmount.toFixed(2) || '0.00' }}</p>
                     <p>Type: {{ order.orderType }}</p>
                     <p *ngIf="order.orderType === 'delivery'">ETA: {{ getDeliveryEta(order) }}</p>
                   </div>
@@ -68,7 +68,7 @@
                       <div class="item-details">
                         <h4>{{ item.name || 'Unnamed Item' }}</h4>
                         <p>Quantity: {{ item.quantity || 0 }}</p>
-                        <p>Price: ${{ item.price?.toFixed(2) || '0.00' }}</p>
+                        <p>Price: ${{ item.price.toFixed(2) || '0.00' }}</p>
                       </div>
                     </div>
                   </div>
@@ -112,7 +112,7 @@
               <mat-card-content>
                 <div class="order-details">
                   <div class="order-summary">
-                    <p>Total: ${{ order.totalAmount?.toFixed(2) || '0.00' }}</p>
+                    <p>Total: ${{ order.totalAmount.toFixed(2) || '0.00' }}</p>
                     <p>Type: {{ order.orderType }}</p>
                     <p class="points-earned">
                       <mat-icon>loyalty</mat-icon>
@@ -129,7 +129,7 @@
                       <div class="item-details">
                         <h4>{{ item.name || 'Unnamed Item' }}</h4>
                         <p>Quantity: {{ item.quantity || 0 }}</p>
-                        <p>Price: ${{ item.price?.toFixed(2) || '0.00' }}</p>
+                        <p>Price: ${{ item.price.toFixed(2) || '0.00' }}</p>
                       </div>
                     </div>
                   </div>
